@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import JSONResponse
 from modules.services import send_to_services
-import uvicorn
 
 app = FastAPI()
 
@@ -16,6 +15,3 @@ async def client_request(request_path: str, request: Request):
         })
     response = Response(content=resp['content'], status_code=resp['status'])
     return response
-
-
-uvicorn.run(app, host="0.0.0.0", port=8000)

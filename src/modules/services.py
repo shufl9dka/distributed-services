@@ -22,8 +22,8 @@ async def send_to_services(request_path, forwarded: Request) -> dict | None:
             CURRENT_WORKING[service_url] += 1
             async with session.request(forwarded.method, f"{service_url.rstrip('/')}/{request_path}", params=dict(forwarded.query_params),
                                        headers=dict(forwarded.headers), data=dict(await forwarded.form())) as resp:
-                CURRENT_WORKING[service_url] -= 1
                 if resp.status // 100 == 5:
+                    CURRENT_WORKING[service_url] -= 1
                     continue
                 return {
                     'content': await resp.content.read(),

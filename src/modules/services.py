@@ -4,6 +4,7 @@ import pathlib
 
 URLS_PATH = pathlib.Path(__file__).parent.parent.joinpath('services_list.txt')
 CURRENT_WORKING = {}
+BAD_STATUSES = set([503, 504, 509, 522, 525, 526])
 
 
 def read_urls(path=URLS_PATH):
@@ -22,7 +23,7 @@ async def send_to_services(request_path, forwarded: Request) -> dict | None:
             CURRENT_WORKING[service_url] += 1
             async with session.request(forwarded.method, f"{service_url.rstrip('/')}/{request_path}", params=dict(forwarded.query_params),
                                        headers=dict(forwarded.headers), data=dict(await forwarded.form())) as resp:
-                if resp.status // 100 == 5:
+                if resp.status in BAD_STATUSES:
                     CURRENT_WORKING[service_url] -= 1
                     continue
                 return {

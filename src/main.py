@@ -11,7 +11,7 @@ async def client_request(request_path: str, request: Request):
     if resp is None:
         return JSONResponse({
             'status': "FAILED",
-            'result': "There's no available service server"
-        })
+            'result': "There's no available service"
+        }, status_code=502)
     response = Response(content=resp['content'], status_code=resp['status'])
     return response
